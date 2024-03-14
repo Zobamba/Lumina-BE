@@ -1,0 +1,38 @@
+{
+  "name": "lumina-be",
+  "version": "1.0.0",
+  "description": "The Backend Service For Lumina Dating Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon -r esm index.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "undo-migration": "npx sequelize-cli db:migrate:undo",
+    "undo-specific": "npx sequelize-cli db:migrate:undo --name"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zobamba/Lumina-BE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zobamba/Lumina-BE/issues"
+  },
+  "homepage": "https://github.com/Zobamba/Lumina-BE#readme",
+  "dependencies": {
+    "@types/twilio": "^3.19.3",
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5",
+    "esm": "^3.2.25",
+    "express": "^4.18.3",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
+    "sequelize": "^6.37.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2"
+  }
+}

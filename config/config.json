@@ -16,7 +16,7 @@
   "production": {
     "username": "onahbernardchizoba",
     "password": "DhEbtkn39CwO",
-    "database": "delicdb",
+    "database": "lumina",
     "host": "ep-round-moon-23141132.us-east-2.aws.neon.tech",
     "dialect": "postgres",
     "port": 5432,

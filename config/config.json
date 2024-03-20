@@ -13,11 +13,13 @@
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
-  "production": {
-    "username": "chizoba",
-    "password": "onah2020",
-    "database": "Lumina",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
-  }
+  "username": "onahbernardchizoba",
+    "password": "DhEbtkn39CwO",
+    "database": "lumina",
+    "host": "ep-round-moon-23141132.us-east-2.aws.neon.tech",
+    "dialect": "postgres",
+    "port": 5432,
+    "dialectOptions": {
+      "ssl": true
+    }
 }

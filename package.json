@@ -24,6 +24,7 @@
   "dependencies": {
     "@types/twilio": "^3.19.3",
     "axios": "^1.6.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "express": "^4.18.3",

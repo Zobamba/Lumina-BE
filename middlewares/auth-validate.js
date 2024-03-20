@@ -52,6 +52,8 @@ export const userUpdateConstraints = [
     .withMessage('gender field is required')
     .isLength({ min: 1 })
     .withMessage('gender field is required')
+    .isIn(['make', 'female'])
+    .withMessage('gender must be either "male" or "female"')
     .isString()
     .withMessage('the gender must be a string')
     .trim(),
@@ -149,13 +151,14 @@ export const userUpdateConstraints = [
   body('passions')
     .exists()
     .withMessage('the passion_ids field is required')
-    .custom((value) => {
-      if (!Array.isArray(value) || value.length < 4 || value.length > 4) {
-        throw new Error('at least four passions are needed');
-      }
-      return true;
-    })
-    .withMessage('the passions field must be an array with four elements')
+    // .custom((value) => {
+    //   if (!Array.isArray(value) || value.length < 4 || value.length > 4) {
+    //     throw new Error('at least four passions are needed');
+    //   }
+    //   return true;
+    // })
+    .isArray({ min: 4, max: 4 })
+    .withMessage('the passions field must be an array with exactly four ids')
 ];
 
 export const locationConstraints = [

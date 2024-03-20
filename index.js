@@ -1,7 +1,8 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 import routes from './routes/routes';
 import dbConnection from './utils/database.js';
-import cors from 'cors';
 
 
 const dotenv = require('dotenv');

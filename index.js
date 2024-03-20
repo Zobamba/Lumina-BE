@@ -10,14 +10,17 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json());
-
 const corsOptions = {
   origin: ['https://lumina-nzfj.vercel.app'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
+
+app.use(express.json());
 
 const port = 8000;
 

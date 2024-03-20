@@ -4,14 +4,14 @@ module.exports = {
   "development": {
     "username": "chizoba",
     "password": "onah2020",
-    "database": "lumina",
+    "database": "Lumina",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "chizoba",
     "password": "onah2020",
-    "database": "lumina",
+    "database": "Lumina",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

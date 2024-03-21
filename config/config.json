@@ -14,10 +14,10 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "onahbernardchizoba",
-    "password": "DhEbtkn39CwO",
+    "username": "chizoba",
+    "password": "onah2020",
     "database": "lumina",
-    "host": "ep-round-moon-23141132.us-east-2.aws.neon.tech",
+    "host": "127.0.0.1",
     "dialect": "postgres",
     "port": 5432,
     "dialectOptions": {

@@ -4,7 +4,6 @@ import cors from 'cors';
 import routes from './routes/routes';
 import dbConnection from './utils/database.js';
 
-
 const dotenv = require('dotenv');
 
 dotenv.config();

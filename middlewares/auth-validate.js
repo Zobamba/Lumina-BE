@@ -52,7 +52,7 @@ export const userUpdateConstraints = [
     .withMessage('gender field is required')
     .isLength({ min: 1 })
     .withMessage('gender field is required')
-    .isIn(['make', 'female'])
+    .isIn(['male', 'female'])
     .withMessage('gender must be either "male" or "female"')
     .isString()
     .withMessage('the gender must be a string')

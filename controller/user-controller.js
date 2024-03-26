@@ -1,54 +1,10 @@
-import models from '../models'; const Sequelize = require('sequelize');
+import passwordHash from 'password-hash';
+import models from '../models';
 import { signJsonWebToken, getErrorMessage, } from '../utils/utils';
 
 const { user, passion, userPassion } = models;
 
-const { Op } = Sequelize;
-
 class UserController {
-  authSignIn(req, res, next) {
-    user.findOne({
-      where: {
-        email: req.body.email,
-      },
-    }).then((updatedUser) => {
-      if (updatedUser) {
-        // User found, sign in and return token
-        const token = signJsonWebToken(updatedUser);
-        return res.status(201).json({
-          id: updatedUser.id,
-          firstName: updatedUser.firstName,
-          email: updatedUser.email,
-          message: 'Sign in successful',
-          token,
-        });
-      }
-
-      // If the user doesn't exist, create a new user
-      return user.create({
-        firstName: req.body.firstName,
-        email: req.body.email,
-      }).then((createdUser) => {
-        const token = signJsonWebToken(createdUser);
-        res.status(201).json({
-          id: createdUser.id,
-          firstName: createdUser.firstName,
-          email: createdUser.email,
-          message: 'User created and signed in successfully',
-          token,
-        });
-      }).catch((error) => {
-        console.log(error);
-        return res.status(400).json({
-          message: 'An error occurred while trying to sign up. Please try again',
-        });
-      });
-    }).catch((error) => res.status(401).json({
-      error: getErrorMessage(error),
-    })).finally(() => {
-      next();
-    });
-  }
 
   verifyPassions(req, res, next) {
     const { passions } = req.body;
@@ -58,7 +14,7 @@ class UserController {
 
       if (missingPassions.length) {
         res.status(401).send({
-          message: `We do not have meals with the following ids: [${missingPassions.join(', ')}]`,
+          message: `We do not have passions with the following ids: [${missingPassions.join(', ')}]`,
         });
       } else {
         next();
@@ -66,17 +22,11 @@ class UserController {
     });
   }
 
-  updateUser(req, res, next) {
-    // const latitude = req.body.location.latitude;
-    // const longitude = req.body.location.longitude;
-
-    // const location = Sequelize.fn('ST_GeomFromGeoJSON', JSON.stringify({
-    //   type: 'Point',
-    //   coordinates: [longitude, latitude] // GeoJSON coordinates are [longitude, latitude]
-    // }));
-    user.update(
+  createUser(req, res, next) {
+    user.create(
       {
         firstName: req.body.firstName,
+        email: req.body.email,
         birthday: req.body.birthday,
         gender: req.body.gender,
         pic1: req.body.pic1,
@@ -85,27 +35,21 @@ class UserController {
         pic4: req.body.pic4,
         pic5: req.body.pic5,
         pic6: req.body.pic6,
-        // location: location,
-        aboutMe: req.body.aboutMe,
-        jobTitle: req.body.jobTitle,
-        company: req.body.company,
-        school: req.body.school,
-        livingIn: req.body.livingIn
-      },
-      {
-        where: { email: req.body.email }, returning: true,
-        // where: { id: req.user.id }, returning: true,
-      }
-    ).then((updated) => {
-      const updatedUser = updated[1][0];
-      req.user = updatedUser;
-      req.passions = req.body.passions;
+        passwordHash: passwordHash.generate(req.body.password),
+      }).then((usr) => {
+        req.user = usr;
+        req.passions = req.body.passions;
 
-      return next();
-    }).catch((error) => {
-      getErrorMessage(error);
-      console.log(error);
-    });
+        return next();
+      }).catch((error) => {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+          return res.status(409).send({
+            message: `A user with the email '${req.body.email}' already exists`,
+          });
+        }
+
+        res.status(400).send(getErrorMessage(error));
+      });
   }
 
   createUserPassions(req, res) {
@@ -133,7 +77,7 @@ class UserController {
         const passionRecords = userPassions.map((userPassion) => userPassion.passion);
 
         res.status(201).send({
-          message: 'User passions updated successfully',
+          message: 'User created successfully',
           user: user,
           passions: passionRecords,
         });
@@ -144,6 +88,79 @@ class UserController {
     }).catch((error) => {
       console.error('Error creating user passions:', error);
       res.status(400).send({ message: error.name });
+    });
+  }
+
+  signIn(req, res) {
+    user.findOne({
+      where: {
+        email: req.body.email,
+      },
+    }).then((usr) => {
+      if (usr === null) {
+        return res.status(404).send({ message: 'User not found' });
+      }
+
+      if (passwordHash.verify(req.body.password, usr.passwordHash)) {
+        return res.status(201).send({
+          id: usr.id,
+          firstName: usr.firstName,
+          lastName: usr.lastName,
+          email: usr.email,
+          message: 'Sign in successful',
+          token: signJsonWebToken(usr),
+        });
+      }
+
+      res.status(404).send({ message: 'User not found' });
+    }).catch((error) => {
+      res.status(400).send(getErrorMessage(error));
+    });
+  }
+
+  authSignIn(req, res, next) {
+    user.findOne({
+      where: {
+        email: req.body.email,
+      },
+    }).then((updatedUser) => {
+      if (updatedUser) {
+        // User found, sign in and return token
+        const token = signJsonWebToken(updatedUser);
+        return res.status(201).json({
+          id: updatedUser.id,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          message: 'Sign in successful',
+          token,
+        });
+      }
+
+      // If the user doesn't exist, create a new user
+      return user.create({
+        firstName: req.body.firstName,
+        lastName: updatedUser.lastName,
+        email: req.body.email,
+      }).then((createdUser) => {
+        const token = signJsonWebToken(createdUser);
+        res.status(201).json({
+          id: createdUser.id,
+          firstName: createdUser.firstName,
+          email: createdUser.email,
+          message: 'User created and signed in successfully',
+          token,
+        });
+      }).catch((error) => {
+        console.log(error);
+        return res.status(400).json({
+          message: 'An error occurred while trying to sign up. Please try again',
+        });
+      });
+    }).catch((error) => res.status(401).json({
+      error: getErrorMessage(error),
+    })).finally(() => {
+      next();
     });
   }
 

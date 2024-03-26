@@ -1,27 +1,7 @@
 import { body, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
-export const authSignInConstraints = [
-  body('email')
-    .exists()
-    .withMessage('email is required')
-    .isLength({ min: 1 })
-    .withMessage('email is required')
-    .isEmail()
-    .withMessage('email field must contain a valid email address')
-    .trim(),
-
-  body('firstName')
-    .exists()
-    .withMessage('firstName field is required')
-    .isLength({ min: 1 })
-    .withMessage('firstName field is required')
-    .isString()
-    .withMessage('the name must be a string')
-    .trim(),
-];
-
-export const userUpdateConstraints = [
+export const createAccountConstraints = [
   body('email')
     .exists()
     .withMessage('email is required')
@@ -108,57 +88,68 @@ export const userUpdateConstraints = [
     .withMessage('the pic6 must be a string')
     .trim(),
 
-  body('aboutMe')
-    .optional()
+    body('password')
+    .exists()
+    .withMessage('password is required')
+    .bail()
     .isLength({ min: 1 })
-    .withMessage('aboutMe field is required')
-    .isString()
-    .withMessage('the aboutMe must be a string')
-    .trim(),
+    .withMessage('password is required')
+    .bail()
+    .isLength({ min: 8 })
+    .withMessage('password must contain at least 8 characters'),
 
-  body('jobTitle')
-    .optional()
+  body('passwordConfirmation')
+    .exists()
+    .withMessage('password confirmation is required')
+    .bail()
     .isLength({ min: 1 })
-    .withMessage('jobTitle field is required')
-    .isString()
-    .withMessage('the jobTitle must be a string')
-    .trim(),
-
-  body('company')
-    .optional()
-    .isLength({ min: 1 })
-    .withMessage('company field is required')
-    .isString()
-    .withMessage('the company must be a string')
-    .trim(),
-
-  body('school')
-    .optional()
-    .isLength({ min: 1 })
-    .withMessage('school field is required')
-    .isString()
-    .withMessage('the school must be a string')
-    .trim(),
-
-  body('livingIn')
-    .optional()
-    .isLength({ min: 1 })
-    .withMessage('livingIn field is required')
-    .isString()
-    .withMessage('the livingIn must be a string')
-    .trim(),
+    .withMessage('password confirmation is required')
+    .bail()
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('password confirmation must match password'),
 
   body('passions')
     .exists()
     .withMessage('the passion_ids field is required')
-    // .custom((value) => {
-    //   if (!Array.isArray(value) || value.length < 4 || value.length > 4) {
-    //     throw new Error('at least four passions are needed');
-    //   }
-    //   return true;
-    // })
     .isArray({ min: 4, max: 4 })
     .withMessage('the passions field must be an array with exactly four ids')
+];
+
+export const signInConstraints = [
+  body('email')
+    .exists()
+    .withMessage('email is required')
+    .isLength({ min: 1 })
+    .withMessage('email is required')
+    .isEmail()
+    .withMessage('email field must contain a valid email address')
+    .trim(),
+
+  body('password')
+    .exists()
+    .withMessage('password is required')
+    .isLength({ min: 1 })
+    .withMessage('password is required'),
+];
+
+export const authSignInConstraints = [
+  body('email')
+    .exists()
+    .withMessage('email is required')
+    .isLength({ min: 1 })
+    .withMessage('email is required')
+    .isEmail()
+    .withMessage('email field must contain a valid email address')
+    .trim(),
+
+  body('firstName')
+    .exists()
+    .withMessage('firstName field is required')
+    .isLength({ min: 1 })
+    .withMessage('firstName field is required')
+    .isString()
+    .withMessage('the name must be a string')
+    .trim(),
 ];
 
 export const locationConstraints = [
